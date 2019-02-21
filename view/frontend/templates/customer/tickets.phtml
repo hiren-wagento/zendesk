@@ -6,6 +6,7 @@
 
 /** @var \Wagento\Zendesk\Block\Tickets $block */
 $tickets = $block->getTickets();
+$helper = $this->helper('Wagento\Zendesk\Helper\Data');
 ?>
 
 <?php if ($tickets): ?>
@@ -24,8 +25,14 @@ $tickets = $block->getTickets();
             <?php foreach ($tickets as $ticket): ?>
                 <tr>
                     <td><?php echo $block->escapeHtml(__($ticket['subject'])); ?></td>
-                    <td><?php echo $block->escapeHtml(__($ticket['created_at'])); ?></td>
-                    <td><?php echo $block->escapeHtml(__($ticket['updated_at'])); ?></td>
+                    <td>
+                        <?php $finalDate = $helper->zendeskToStoreDate($ticket['created_at']); ?>
+                        <?php echo $block->escapeHtml($finalDate->format('Y-m-d H:i:s A')); ?>
+                    </td>
+                    <td>
+                        <?php $finalDate = $helper->zendeskToStoreDate($ticket['updated_at']); ?>
+                        <?php echo $block->escapeHtml($finalDate->format('Y-m-d H:i:s A')); ?>
+                    </td>
                     <td><?php echo $block->escapeHtml(__($ticket['status'])); ?></td>
                     <td>
                         <a href="<?php echo $block->getViewUrl($ticket['id']) ?>">

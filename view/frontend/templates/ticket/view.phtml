@@ -7,6 +7,7 @@
 /** @var \Wagento\Zendesk\Block\Ticket\View $block */
 $authorId = $block->getAuthorId();
 $comments = $block->getComments();
+$helper = $this->helper('Wagento\Zendesk\Helper\Data');
 ?>
 <div class="panel panel-primary">
     <div class="panel-heading"></div>
@@ -19,7 +20,8 @@ $comments = $block->getComments();
                         <div class="chat-body">
                             <div class="header">
                                 <small class="text-muted <?= $right ? '' : 'pull-right' ?>">
-                                    <?= $comment['created_at'] ?>
+                                    <?php $finalDate = $helper->zendeskToStoreDate($comment['created_at']); ?>
+                                    <?php echo $block->escapeHtml($finalDate->format('Y-m-d H:i:s A')); ?>
                                 </small>
 
                                 <strong class="<?= $right ? 'pull-right' : '' ?>">

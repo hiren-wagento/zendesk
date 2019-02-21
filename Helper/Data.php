@@ -26,6 +26,7 @@ class Data extends AbstractHelper
     const PATH_SECRET = 'zendesk/config/secret';
     const PATH_TOKEN = 'zendesk/config/token';
     const PATH_ORDER_FIELD = 'zendesk/ticket/order_field_id';
+    const PATH_TIMEZONE = 'zendesk/ticket/frontend/timezone';
 
     private $subdomain = null;
     private $client_id = null;
@@ -42,6 +43,10 @@ class Data extends AbstractHelper
      * @var \Magento\Framework\App\Cache\TypeListInterface
      */
     private $typeList;
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     */
+    private $timezone;
 
     /**
      * Data constructor.
@@ -49,18 +54,20 @@ class Data extends AbstractHelper
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
      * @param Api\Sources\Client $client
      * @param \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
      */
     public function __construct(
         Context $context,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        \Magento\Framework\App\Cache\TypeListInterface $typeList
+        \Magento\Framework\App\Cache\TypeListInterface $typeList,
+        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
     ) {
-    
         parent::__construct($context);
         $this->encryptor = $encryptor;
         $this->configWriter = $configWriter;
         $this->typeList = $typeList;
+        $this->timezone = $timezone;
     }
 
     /**
@@ -240,5 +247,17 @@ class Data extends AbstractHelper
 
     public function cleanCacheConfig() {
         $this->typeList->cleanType('config');
+    }
+
+    /**
+     * @param $zendeskDate
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public function zendeskToStoreDate($zendeskDate)
+    {
+        $value = $this->scopeConfig->getValue(self::PATH_TIMEZONE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $timeZoneDate = $this->timezone->date(new \DateTime($zendeskDate), null, $value, true);
+        return $timeZoneDate;
     }
 }

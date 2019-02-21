@@ -12,6 +12,7 @@
             <ticket>
                 <frontend>
                     <customer_account_order_ticket>1</customer_account_order_ticket>
+                    <timezone>1</timezone>
                 </frontend>
             </ticket>
             <zendesk_m2app>
